@@ -9,7 +9,7 @@
             <div class="col-md-6 text-center text-md-end">
                 <div class="d-inline-flex gap-4">
                     <a class="text-secondary text-decoration-none small hover-light" href="{{ route('linimasa.index') }}">Linimasa</a>
-                    <a class="text-secondary text-decoration-none small hover-light" href="#">Tentang</a>
+                    <a class="text-secondary text-decoration-none small hover-light" href="{{ route('tentang.index') }}">Tentang</a>
                     <a class="text-secondary text-decoration-none small hover-light" href="#">Admin</a>
                 </div>
             </div>

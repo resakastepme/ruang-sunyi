@@ -118,3 +118,42 @@ body {
 @media (min-width: 992px) {
   .border-start-lg { border-left: 1px solid rgba(255, 255, 255, 0.08); }
 }
+
+/* ==========================================================================
+   Halaman "Tentang Saya"
+   ========================================================================== */
+
+/* Override variabel & glow ambien khusus halaman ini (di-scope ke body) */
+body.accent-glow {
+  --bs-secondary-color: #a0a4b8;
+  --bs-border-color: rgba(255, 255, 255, 0.08);
+  background-image: radial-gradient(600px circle at 50% -10%, rgba(128, 131, 255, 0.12), transparent 70%);
+  background-repeat: no-repeat;
+}
+
+.font-code { font-family: 'JetBrains Mono', monospace; }
+.font-editorial-italic { font-family: 'Newsreader', Georgia, serif; font-style: italic; }
+
+.card-sunyi {
+  background-color: #181c24;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.card-sunyi-dark {
+  background-color: #12161f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Aksen garis kiri tebal pada kartu manifesto */
+.border-start-3 { border-left-width: 3px !important; }
+.border-start-primary { border-left-color: #8083ff !important; }
+
+/* Sparkline "frekuensi malam" */
+.sparkline-bar {
+  width: 10px;
+  border-radius: 3px 3px 0 0;
+  background-color: rgba(192, 193, 255, 0.2);
+}
+.sparkline-bar.active {
+  background-color: #c0c1ff;
+  box-shadow: 0 0 10px rgba(192, 193, 255, 0.5);
+}

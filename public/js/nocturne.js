@@ -62,4 +62,11 @@ $(function () {
             $feedback.addClass('d-none');
         }, 3500);
     });
+
+    // Form "Surat Digital" (halaman Tentang) ------------------------------
+    $('#quietNoteForm').on('submit', function (e) {
+        e.preventDefault();
+        $(this).addClass('d-none');
+        $('#thankYouNote').removeClass('d-none');
+    });
 });

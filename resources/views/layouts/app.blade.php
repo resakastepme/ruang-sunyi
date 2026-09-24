@@ -20,7 +20,7 @@
 
     @stack('styles')
 </head>
-<body>
+<body class="@yield('body_class')">
     @include('partials.navbar')
 
     <main class="flex-grow-1 py-5">

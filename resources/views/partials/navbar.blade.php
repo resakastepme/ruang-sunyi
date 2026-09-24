@@ -1,5 +1,6 @@
 @php
     $onLinimasa = request()->routeIs('linimasa.index');
+    $onTentang = request()->routeIs('tentang.index');
 @endphp
 
 <nav class="navbar navbar-expand-lg sticky-top border-bottom"
@@ -28,7 +29,9 @@
                        href="{{ route('linimasa.index') }}">Linimasa Publik</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link rounded-pill px-3 py-1 text-secondary" href="#">Tentang Saya</a>
+                    <a class="nav-link rounded-pill px-3 py-1 {{ $onTentang ? 'active fw-medium text-light bg-secondary bg-opacity-25' : 'text-secondary' }}"
+                       @if ($onTentang) aria-current="page" @endif
+                       href="{{ route('tentang.index') }}">Tentang Saya</a>
                 </li>
             </ul>
 
