@@ -16,7 +16,7 @@
         </div>
         <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2 pt-4 mt-4 border-top border-secondary border-opacity-10 text-muted small">
             <span class="font-mono-code" style="font-size: 0.8rem;">echo "silence is golden"; // nocturne notes</span>
-            <span>&copy; {{ date('Y') }} Ruang Sunyi &mdash; Resa Komara Akbari. Seluruh refleksi terpelihara.</span>
+            <span>&copy; {{ date('Y') }} Ruang Sunyi &mdash; {{ $owner?->name ?? 'Ruang Sunyi' }}. Seluruh refleksi terpelihara.</span>
         </div>
     </div>
 </footer>

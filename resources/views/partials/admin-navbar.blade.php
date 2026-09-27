@@ -34,15 +34,15 @@
                         <span class="fw-semibold small mb-0">{{ auth()->user()->name }}</span>
                         <div class="d-flex align-items-center gap-1">
                             <span class="status-badge-dot"></span>
-                            <span class="text-secondary font-mono" style="font-size: 0.72rem;">@@StepMe • Mode Hening</span>
+                            <span class="text-secondary font-mono" style="font-size: 0.72rem;">@StepMe • Mode Hening</span>
                         </div>
                     </div>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary border-opacity-25">
-                    <li class="dropdown-header font-mono text-muted small">STATUS: MODE HENING AKTIF</li>
-                    <li><a class="dropdown-item d-flex align-items-center gap-2 small" href="#"><i class="bi bi-person"></i> Profil Pengarang</a></li>
-                    <li><a class="dropdown-item d-flex align-items-center gap-2 small" href="#"><i class="bi bi-sliders"></i> Pengaturan Jurnal</a></li>
-                    <li><a class="dropdown-item d-flex align-items-center gap-2 small" href="#"><i class="bi bi-palette"></i> Tema &amp; Tampilan</a></li>
+                    {{-- <li class="dropdown-header font-mono text-muted small">STATUS: MODE HENING AKTIF</li> --}}
+                    <li><a class="dropdown-item d-flex align-items-center gap-2 small" href="{{ url('/admin-ca9ef168e63c4863/edit-profile') }}"><i class="bi bi-person"></i> Profil Pengarang</a></li>
+                    {{-- <li><a class="dropdown-item d-flex align-items-center gap-2 small" href="#"><i class="bi bi-sliders"></i> Pengaturan Jurnal</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center gap-2 small" href="#"><i class="bi bi-palette"></i> Tema &amp; Tampilan</a></li> --}}
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form method="POST" action="{{ route('admin.logout') }}">

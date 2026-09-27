@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\NoteController;
 use App\Http\Controllers\LinimasaController;
 use App\Http\Controllers\TentangController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,19 @@ Route::prefix('admin-ca9ef168e63c4863')->name('admin.')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
+        Route::get('/edit-profile', [DashboardController::class, 'EditProfilePage'])->name('edit-profile');
+        Route::post('/edit-profile', [DashboardController::class, 'updateProfile'])->name('update-profile');
+        Route::post('/edit-profile/password', [DashboardController::class, 'updatePassword'])->name('update-password');
+
+        // Catatan / jurnal (CRUD dasbor)
+        Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+        Route::get('/notes/{note}/edit', [NoteController::class, 'edit'])->name('notes.edit');
+        Route::put('/notes/{note}', [NoteController::class, 'update'])->name('notes.update');
+        Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
+        Route::patch('/notes/{note}/pin', [NoteController::class, 'togglePin'])->name('notes.pin');
+        Route::patch('/notes/{note}/visibility', [NoteController::class, 'toggleVisibility'])->name('notes.visibility');
+        Route::patch('/notes/{note}/publish', [NoteController::class, 'publish'])->name('notes.publish');
+
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });
 });

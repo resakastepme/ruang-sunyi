@@ -26,22 +26,22 @@
                 <li class="nav-item">
                     <a class="nav-link rounded-pill px-3 py-1 {{ $onLinimasa ? 'active fw-medium text-light bg-secondary bg-opacity-25' : 'text-secondary' }}"
                        @if ($onLinimasa) aria-current="page" @endif
-                       href="{{ route('linimasa.index') }}">Linimasa Publik</a>
+                       href="{{ route('linimasa.index') }}">Public Home</a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link rounded-pill px-3 py-1 {{ $onTentang ? 'active fw-medium text-light bg-secondary bg-opacity-25' : 'text-secondary' }}"
                        @if ($onTentang) aria-current="page" @endif
                        href="{{ route('tentang.index') }}">Tentang Saya</a>
-                </li>
+                </li> --}}
             </ul>
 
             <div class="d-flex align-items-center gap-3">
-                <a class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2 border-opacity-25 text-light bg-surface-card" href="#">
+                {{-- <a class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2 border-opacity-25 text-light bg-surface-card" href="#">
                     <span class="spinner-grow spinner-grow-sm text-info" role="status" style="width: 7px; height: 7px;"></span>
                     <span style="font-size: 0.8rem;">Admin Panel</span>
-                </a>
-                <img src="https://lh3.googleusercontent.com/aida/AEtjO1WFvF7Iq6ZoyAsINeCigTQed_XObjbC-yV7L5hg8CJknfK-ZsqNV0QDBXsRZ2bVTQuBUuRbPtkI0czTvDAQ0MyBz2aIspqBYU12KcMDzt1iLfs8nKHG7MuI2Q5aXI670nXvSQCMIsUgh575RVamDeYyMzODedg3i61x8SpGhrIl4SfJFdh6sQaW0CIaFKAjBX3YdwMsUWQSxCm5BIRCnZqy1cl-hkWPN_GFZXQyTHByrCcuNP_dwYyJ04U"
-                     alt="Resa Komara Akbari" class="rounded-circle object-fit-cover border border-secondary border-opacity-25" width="36" height="36">
+                </a> --}}
+                <img src="{{ $owner?->avatar_url }}"
+                     alt="{{ $owner?->name }}" class="rounded-circle object-fit-cover border border-secondary border-opacity-25" width="36" height="36">
             </div>
         </div>
     </div>
