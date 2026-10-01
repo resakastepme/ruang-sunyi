@@ -58,10 +58,9 @@
     <div class="d-flex align-items-center flex-wrap gap-2 mt-2">
         @if ($youtubeConnected ?? false)
             <span class="badge badge-subtle-info font-mono"><i class="bi bi-youtube me-1 text-danger"></i>YouTube connected</span>
-            <form method="POST" action="{{ route('admin.youtube.disconnect') }}" class="d-inline" data-confirm="Disconnect YouTube?">
-                @csrf
-                <button type="submit" class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size: 0.72rem;">Disconnect</button>
-            </form>
+            {{-- Tombol biasa (bukan <form> nested, agar tidak merusak form composer) --}}
+            <button type="button" id="yt-disconnect" data-url="{{ route('admin.youtube.disconnect') }}"
+                    class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size: 0.72rem;">Disconnect</button>
         @else
             <span class="badge badge-subtle-secondary font-mono"><i class="bi bi-youtube me-1"></i>YouTube not connected</span>
             <a href="{{ route('admin.youtube.connect') }}" target="_blank" rel="noopener"
@@ -75,7 +74,8 @@
     {{-- In-browser recorder + auto-upload --}}
     <div class="card-nested p-3 mt-3" id="videoRecorder"
          data-connected="{{ ($youtubeConnected ?? false) ? '1' : '0' }}"
-         data-upload-url="{{ route('admin.youtube.upload') }}">
+         data-session-url="{{ route('admin.youtube.upload-session') }}"
+         data-chunk-url="{{ route('admin.youtube.upload-chunk') }}">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
             <span class="font-mono small text-light"><i class="bi bi-record-circle me-1 text-danger"></i>Record a clip</span>
             <span class="badge badge-subtle-secondary font-mono" style="font-size: 0.68rem;">camera + mic</span>

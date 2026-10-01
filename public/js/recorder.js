@@ -27,10 +27,13 @@
     var uploadFileBtn = document.getElementById('recUploadFile');
     var uploadStatus  = document.getElementById('recUploadStatus');
 
-    var connected = root.getAttribute('data-connected') === '1';
-    var uploadUrl = root.getAttribute('data-upload-url');
-    var csrfMeta  = document.querySelector('meta[name="csrf-token"]');
-    var csrf      = csrfMeta ? csrfMeta.getAttribute('content') : '';
+    var connected  = root.getAttribute('data-connected') === '1';
+    var sessionUrl = root.getAttribute('data-session-url');
+    var chunkUrl   = root.getAttribute('data-chunk-url');
+    var csrfMeta   = document.querySelector('meta[name="csrf-token"]');
+    var csrf       = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    var CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB (kelipatan 256KB, aman < post_max_size default)
 
     var stream = null;
     var recorder = null;
@@ -127,7 +130,15 @@
         if (!stream) { return; }
         chunks = [];
         try {
-            recorder = new MediaRecorder(stream);
+            // Batasi bitrate agar ukuran file wajar; fallback bila opsi tak didukung.
+            try {
+                recorder = new MediaRecorder(stream, {
+                    videoBitsPerSecond: 2000000,
+                    audioBitsPerSecond: 128000,
+                });
+            } catch (optErr) {
+                recorder = new MediaRecorder(stream);
+            }
         } catch (e) {
             showError('Perekaman tidak didukung: ' + e.message);
             return;
@@ -170,40 +181,76 @@
         uploadStatus.classList.remove('d-none');
     }
 
-    function uploadToYoutube(file, filename) {
+    function setBusy(busy) {
+        if (uploadBtn) { uploadBtn.disabled = busy; }
+        if (uploadFileBtn) { uploadFileBtn.disabled = busy; }
+    }
+
+    async function postJson(url, payload) {
+        var res = await fetch(url, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        var data = {};
+        try { data = await res.json(); } catch (e) { data = {}; }
+        if (!res.ok) { throw new Error(data.message || 'Request failed.'); }
+        return data;
+    }
+
+    // Upload chunked langsung ke sesi resumable (lewat server, same-origin).
+    async function uploadToYoutube(file, filename) {
         if (!file) { setStatus('Nothing to upload yet.', 'error'); return; }
         if (!connected) { setStatus('Connect YouTube first (button above).', 'error'); return; }
 
-        var fd = new FormData();
-        fd.append('video', file, filename || 'video.webm');
+        setBusy(true);
+        setStatus('Preparing upload…', 'info');
 
-        if (uploadBtn) { uploadBtn.disabled = true; }
-        if (uploadFileBtn) { uploadFileBtn.disabled = true; }
-        setStatus('Uploading to YouTube… this can take a while for large files.', 'info');
-
-        fetch(uploadUrl, {
-            method: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
-            body: fd
-        }).then(function (res) {
-            return res.text().then(function (text) {
-                var data = {};
-                try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
-                return { ok: res.ok, data: data };
+        try {
+            var init = await postJson(sessionUrl, {
+                title: filename || 'nocturne-clip',
+                size: file.size,
+                mimeType: file.type || 'video/webm'
             });
-        }).then(function (r) {
-            if (!r.ok) {
-                throw new Error(r.data && r.data.message ? r.data.message : 'Upload failed.');
+            var uploadUrl = init.upload_url;
+
+            var start = 0;
+            var videoId = null;
+
+            while (start < file.size) {
+                var end = Math.min(start + CHUNK_SIZE, file.size);
+                var res = await fetch(chunkUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrf,
+                        'X-Session-Url': uploadUrl,
+                        'X-Chunk-Start': String(start),
+                        'X-Total-Size': String(file.size),
+                        'Content-Type': 'application/octet-stream',
+                        'Accept': 'application/json'
+                    },
+                    body: file.slice(start, end)
+                });
+                var data = {};
+                try { data = await res.json(); } catch (e) { data = {}; }
+                if (!res.ok) { throw new Error(data.message || 'Upload failed.'); }
+
+                setStatus('Uploading… ' + Math.round((end / file.size) * 100) + '%', 'info');
+
+                if (data.status === 'done') { videoId = data.video_id; break; }
+                start = end;
             }
+
+            if (!videoId) { throw new Error('Upload did not complete.'); }
+
             var field = document.getElementById('noteYoutube');
-            if (field && r.data.video_id) { field.value = r.data.video_id; }
+            if (field) { field.value = videoId; }
             setStatus('Uploaded as unlisted. Link filled above — now Publish/Save the note.', 'ok');
-        }).catch(function (e) {
+        } catch (e) {
             setStatus(e.message || 'Upload failed.', 'error');
-        }).then(function () {
-            if (uploadBtn) { uploadBtn.disabled = false; }
-            if (uploadFileBtn) { uploadFileBtn.disabled = false; }
-        });
+        } finally {
+            setBusy(false);
+        }
     }
 
     if (uploadBtn) {
