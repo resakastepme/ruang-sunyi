@@ -328,6 +328,49 @@ body.accent-glow {
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
 }
+
+/* ==========================================================================
+   Halaman legal (Privacy Policy / Terms of Service)
+   ========================================================================== */
+.legal-prose {
+  color: #c7cad8;
+  line-height: 1.75;
+}
+.legal-prose > p:first-child {
+  margin-top: 0;
+}
+.legal-prose h2 {
+  color: #f2f3f8;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 2rem 0 0.75rem;
+}
+.legal-prose p,
+.legal-prose li {
+  font-size: 0.95rem;
+}
+.legal-prose ul {
+  padding-left: 1.3rem;
+  margin-bottom: 1rem;
+}
+.legal-prose li {
+  margin-bottom: 0.4rem;
+}
+.legal-prose a {
+  color: #a8b0ff;
+  text-decoration: none;
+}
+.legal-prose a:hover {
+  text-decoration: underline;
+}
+.legal-prose strong {
+  color: #f2f3f8;
+}
+.legal-prose code {
+  font-family: 'JetBrains Mono', monospace;
+  color: #bdc2ff;
+  font-size: 0.88em;
+}
 .comment-avatar {
   flex-shrink: 0;
   width: 40px;
