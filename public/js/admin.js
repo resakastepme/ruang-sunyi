@@ -19,6 +19,19 @@ $(function () {
         $counter.text(words);
     });
 
+    // Putuskan YouTube — submit lewat form dinamis (hindari <form> nested) --
+    $('#yt-disconnect').on('click', function () {
+        if (!window.confirm('Disconnect YouTube?')) {
+            return;
+        }
+        var token = $('meta[name="csrf-token"]').attr('content');
+        $('<form method="POST">')
+            .attr('action', $(this).data('url'))
+            .append($('<input type="hidden" name="_token">').val(token))
+            .appendTo('body')
+            .trigger('submit');
+    });
+
     // Show / hide password (halaman login) --------------------------------
     $('#togglePassword').on('click', function () {
         var $input = $('#password');

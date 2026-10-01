@@ -182,4 +182,75 @@ class YouTubeService
 
         return $id;
     }
+
+    /**
+     * Mulai sesi upload resumable (server-side) dan kembalikan URL sesinya.
+     * Browser lalu mengirim byte per-chunk ke server untuk diteruskan ke URL ini.
+     */
+    public function startResumableSession(
+        string $title,
+        int $size,
+        string $mime,
+        string $privacy = 'unlisted'
+    ): string {
+        $token = $this->accessToken();
+
+        $res = Http::withToken($token)
+            ->timeout(60)
+            ->withHeaders([
+                'X-Upload-Content-Length' => (string) $size,
+                'X-Upload-Content-Type'   => $mime,
+            ])
+            ->post(self::UPLOAD_URL, [
+                'snippet' => ['title' => mb_substr($title, 0, 100)],
+                'status'  => [
+                    'privacyStatus'           => $privacy,
+                    'selfDeclaredMadeForKids' => false,
+                ],
+            ]);
+
+        if ($res->failed()) {
+            throw new RuntimeException('Failed to start upload: ' . $res->body());
+        }
+
+        $url = $res->header('Location');
+        if (blank($url)) {
+            throw new RuntimeException('YouTube did not return an upload URL.');
+        }
+
+        return $url;
+    }
+
+    /**
+     * Teruskan satu chunk ke sesi resumable. Mengembalikan:
+     *   ['status' => 'continue']                     — perlu chunk berikutnya
+     *   ['status' => 'done', 'video_id' => '...']     — selesai
+     */
+    public function putChunk(string $sessionUrl, string $chunk, int $start, int $total): array
+    {
+        $length = strlen($chunk);
+        $end    = $start + $length - 1;
+
+        $res = Http::timeout(600)
+            ->withoutRedirecting()
+            ->withHeaders(['Content-Range' => "bytes {$start}-{$end}/{$total}"])
+            ->withBody($chunk, 'application/octet-stream')
+            ->put($sessionUrl);
+
+        // 308 = Resume Incomplete (kirim chunk berikutnya).
+        if ($res->status() === 308) {
+            return ['status' => 'continue'];
+        }
+
+        if ($res->successful()) {
+            $id = $res->json('id');
+            if (blank($id)) {
+                throw new RuntimeException('Upload finished but no video id was returned.');
+            }
+
+            return ['status' => 'done', 'video_id' => $id];
+        }
+
+        throw new RuntimeException('Chunk upload failed: ' . $res->body());
+    }
 }

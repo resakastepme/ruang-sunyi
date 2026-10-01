@@ -63,6 +63,8 @@ Route::prefix('admin-ca9ef168e63c4863')->name('admin.')->group(function () {
         Route::get('/youtube/callback', [YouTubeController::class, 'callback'])->name('youtube.callback');
         Route::post('/youtube/disconnect', [YouTubeController::class, 'disconnect'])->name('youtube.disconnect');
         Route::post('/youtube/upload', [YouTubeController::class, 'upload'])->name('youtube.upload');
+        Route::post('/youtube/upload-session', [YouTubeController::class, 'uploadSession'])->name('youtube.upload-session');
+        Route::post('/youtube/upload-chunk', [YouTubeController::class, 'uploadChunk'])->name('youtube.upload-chunk');
 
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });
