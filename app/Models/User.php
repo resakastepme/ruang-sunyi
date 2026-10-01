@@ -27,6 +27,7 @@ class User extends Authenticatable
         'avatar',
         'bio',
         'password',
+        'youtube_refresh_token',
     ];
 
     /**
@@ -37,6 +38,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'youtube_refresh_token',
     ];
 
     /**
@@ -49,6 +51,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'youtube_refresh_token' => 'encrypted',
         ];
     }
 

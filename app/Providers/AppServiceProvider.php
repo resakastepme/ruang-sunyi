@@ -34,5 +34,16 @@ class AppServiceProvider extends ServiceProvider
         }
 
         View::share('owner', $owner);
+
+        // Status koneksi YouTube untuk form note (composer + edit).
+        View::composer('admin.notes._form', function ($view) {
+            try {
+                $connected = app(\App\Services\YouTubeService::class)->isConnected();
+            } catch (\Throwable $e) {
+                $connected = false;
+            }
+
+            $view->with('youtubeConnected', $connected);
+        });
     }
 }

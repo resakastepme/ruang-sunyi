@@ -38,6 +38,7 @@ class Note extends Model
         'status',
         'is_pinned',
         'image',
+        'youtube_video_id',
         'tags',
         'published_at',
     ];
@@ -82,6 +83,38 @@ class Note extends Model
         return Attribute::make(
             get: fn (): ?string => $this->image ? asset('storage/' . $this->image) : null,
         );
+    }
+
+    /** URL embed YouTube (privacy-enhanced) dari video id, bila ada. */
+    protected function youtubeEmbedUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?string => $this->youtube_video_id
+                ? 'https://www.youtube-nocookie.com/embed/' . $this->youtube_video_id
+                : null,
+        );
+    }
+
+    /**
+     * Ambil ID video (11 karakter) dari input: ID langsung atau berbagai
+     * bentuk URL YouTube (watch, youtu.be, embed, shorts, live).
+     * Mengembalikan null bila tak dikenali / kosong.
+     */
+    public static function parseYoutubeId(?string $input): ?string
+    {
+        $input = trim((string) $input);
+
+        if ($input === '') {
+            return null;
+        }
+
+        if (preg_match('/^[A-Za-z0-9_-]{11}$/', $input)) {
+            return $input;
+        }
+
+        $pattern = '~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~';
+
+        return preg_match($pattern, $input, $m) ? $m[1] : null;
     }
 
     protected function categoryLabel(): Attribute
