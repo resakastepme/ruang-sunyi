@@ -107,6 +107,81 @@ body {
   background: linear-gradient(90deg, #8083ff, #7bd0ff, #bdc2ff);
 }
 
+/* Hiasan bulan pada banner profil (vektor screen.html) ------------------- */
+.profile-moon-deco {
+  position: absolute;
+  right: -70px;                                     /* membludak & terpotong di kanan */
+  bottom: -70px;                                    /* condong ke bawah, seperti desain */
+  width: 400px;
+  height: 400px;
+  max-width: 48%;
+  opacity: 0.4;                                     /* redup/gelap seperti watermark */
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;                                       /* selalu di belakang teks banner */
+}
+
+/* Konten markdown pada kartu linimasa ------------------------------------ */
+.note-markdown > :last-child { margin-bottom: 0; }
+.note-markdown h1,
+.note-markdown h2,
+.note-markdown h3,
+.note-markdown h4 {
+  font-family: var(--bs-body-font-family);
+  font-weight: 700;
+  color: #f2f3f8;
+  font-size: 1.35rem;
+  margin-bottom: 0.75rem;
+}
+.note-markdown a { color: #a8b0ff; text-decoration: none; }
+.note-markdown a:hover { text-decoration: underline; }
+.note-markdown strong { color: #f2f3f8; }
+.note-markdown blockquote {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  color: #dfe2ee;
+  border-left: 3px solid #8083ff;
+  background-color: rgba(99, 102, 241, 0.08);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+.note-markdown blockquote > :last-child { margin-bottom: 0; }
+.note-markdown code {
+  font-family: 'JetBrains Mono', monospace;
+  color: #bdc2ff;
+  font-size: 0.9em;
+}
+.note-markdown pre {
+  background-color: #121620;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+}
+.note-markdown pre code { color: #7bd0ff; }
+.note-markdown img { max-width: 100%; border-radius: 0.5rem; }
+.note-markdown ul,
+.note-markdown ol { padding-left: 1.35rem; }
+
+/* Paginasi (selaras tema gelap) ------------------------------------------ */
+.pagination {
+  --bs-pagination-bg: #181c24;
+  --bs-pagination-border-color: rgba(255, 255, 255, 0.07);
+  --bs-pagination-color: #dfe2ee;
+  --bs-pagination-hover-bg: #262a33;
+  --bs-pagination-hover-border-color: #2b303d;
+  --bs-pagination-hover-color: #fff;
+  --bs-pagination-focus-bg: #262a33;
+  --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(128, 131, 255, 0.25);
+  --bs-pagination-active-bg: #8083ff;
+  --bs-pagination-active-border-color: #8083ff;
+  --bs-pagination-active-color: #10122e;
+  --bs-pagination-disabled-bg: #14171f;
+  --bs-pagination-disabled-border-color: rgba(255, 255, 255, 0.07);
+  --bs-pagination-disabled-color: #5a5f70;
+}
+
 /* Utilitas tambahan (tidak disediakan Bootstrap) ------------------------- */
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
@@ -156,4 +231,125 @@ body.accent-glow {
 .sparkline-bar.active {
   background-color: #c0c1ff;
   box-shadow: 0 0 10px rgba(192, 193, 255, 0.5);
+}
+
+/* ==========================================================================
+   Halaman "Special Note" (/special-note)
+   ========================================================================== */
+
+/* Baris sorotan di tengah catatan — "I LIKE YOU" */
+.special-note-highlight {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-size: 1.5rem;
+  color: #c0c1ff;
+  text-align: center;
+  margin: 1.75rem 0;
+  text-shadow: 0 0 22px rgba(128, 131, 255, 0.45);
+}
+
+/* Ilustrasi "No comment yet" */
+.comment-empty-art {
+  width: 128px;
+  height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+/* Satu komentar pada daftar */
+.comment-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+/* ==========================================================================
+   Pratinjau gambar (lightbox) — berlaku di semua halaman publik
+   ========================================================================== */
+.img-preview {
+  cursor: zoom-in;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.img-preview:hover {
+  opacity: 0.9;
+}
+
+.img-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;                       /* di atas navbar sticky & lainnya */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(8, 10, 16, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: zoom-out;
+}
+.img-lightbox.show {
+  display: flex;
+}
+.img-lightbox img {
+  max-width: min(92vw, 880px);
+  max-height: 88vh;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+  object-fit: contain;
+  cursor: default;
+  animation: imgLightboxIn 0.18s ease-out;
+}
+@keyframes imgLightboxIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.img-lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #dfe2ee;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50rem;
+  cursor: pointer;
+}
+.img-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.comment-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #c0c1ff;
+  background-color: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+.comment-bubble {
+  flex: 1;
+  background-color: #12161f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.85rem;
+  padding: 0.65rem 0.9rem;
+}
+.comment-text {
+  white-space: pre-wrap;
+  word-break: break-word;
 }

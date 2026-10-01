@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tentang Saya - Ruang Sunyi')
+@section('title', 'Tentang Saya - Nocturne Notes')
 
 @section('body_class', 'accent-glow')
 
@@ -12,7 +12,7 @@
             <div class="col-auto">
                 <div class="position-relative">
                     <img src="https://lh3.googleusercontent.com/aida/AEtjO1WFvF7Iq6ZoyAsINeCigTQed_XObjbC-yV7L5hg8CJknfK-ZsqNV0QDBXsRZ2bVTQuBUuRbPtkI0czTvDAQ0MyBz2aIspqBYU12KcMDzt1iLfs8nKHG7MuI2Q5aXI670nXvSQCMIsUgh575RVamDeYyMzODedg3i61x8SpGhrIl4SfJFdh6sQaW0CIaFKAjBX3YdwMsUWQSxCm5BIRCnZqy1cl-hkWPN_GFZXQyTHByrCcuNP_dwYyJ04U"
-                         alt="Resa Komara Akbari" class="rounded-4 object-fit-cover shadow-lg border border-light border-opacity-10" width="136" height="136">
+                         alt="Resa Komara Akbari" class="img-preview rounded-4 object-fit-cover shadow-lg border border-light border-opacity-10" width="136" height="136">
                     <span class="position-absolute bottom-0 start-50 translate-middle-x badge rounded-pill bg-dark border border-secondary-subtle font-code px-2 py-1 shadow-sm" style="font-size: 0.72rem;">
                         <i class="bi bi-circle-fill text-success me-1" style="font-size: 7px;"></i> Malam Hari
                     </span>

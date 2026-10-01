@@ -1,17 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'Linimasa Publik - Ruang Sunyi')
+@section('title', 'Public Home - Nocturne Notes')
 
 @section('content')
 <div class="container">
     {{-- Profile Header Banner --}}
     <section class="card bg-surface-card rounded-4 shadow-sm border-0 mb-4 position-relative overflow-hidden">
-        <div class="card-body p-4 p-md-5">
+        {{-- Hiasan bulan (vektor dari screen.html, tanpa latar) — redup di sisi kanan banner, hanya layar lebar --}}
+        <svg class="profile-moon-deco d-none d-lg-block" viewBox="0 0 100 100" fill="none"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <circle cx="50" cy="50" r="32" stroke="#6366F1" stroke-width="3" stroke-dasharray="4 4" opacity="0.7"/>
+            <path d="M38 52C38 43 45 36 54 36C56 36 58 36.5 60 37.5C53.5 39 49 45 49 52C49 59 53.5 65 60 66.5C58 67.5 56 68 54 68C45 68 38 61 38 52Z" fill="#818CF8"/>
+            <circle cx="64" cy="40" r="3.5" fill="#38BDF8"/>
+        </svg>
+
+        <div class="card-body p-4 p-md-5 position-relative">
             <div class="row align-items-center g-4">
                 <div class="col-lg-8 d-flex flex-column flex-sm-row align-items-start gap-4">
                     <div class="position-relative flex-shrink-0">
                         <img src="{{ $owner?->avatar_url }}"
-                             alt="{{ $owner?->name }}" class="rounded-circle object-fit-cover border border-2 border-primary border-opacity-50 shadow" width="120" height="120">
+                             alt="{{ $owner?->name }}" class="img-preview rounded-circle object-fit-cover border border-2 border-primary border-opacity-50 shadow" width="120" height="120">
                         {{-- <span class="position-absolute bottom-0 end-0 p-1 bg-info border border-2 border-dark rounded-circle" title="Online late night"></span> --}}
                     </div>
                     <div>
@@ -61,74 +69,56 @@
         </div>
     </section>
 
-    {{-- Category Filter Pills --}}
+    {{-- Category Filter Pills (bersumber dari Note::CATEGORIES, filter server-side) --}}
     <div class="d-flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none" id="filter-bar">
-        <button class="btn btn-pill-filter active" data-category="all">Every Dump</button>
-        <button class="btn btn-pill-filter" data-category="renungan">🌙 Night Vibe</button>
-        <button class="btn btn-pill-filter" data-category="kopi">☕ Coffee Routine</button>
-        <button class="btn btn-pill-filter" data-category="catatan">✍️ Notes</button>
-        <button class="btn btn-pill-filter" data-category="buku">📖 Ideas</button>
+        <a href="{{ route('linimasa.index') }}"
+           class="btn btn-pill-filter text-nowrap {{ $activeCategory === null ? 'active' : '' }}">Every Dump</a>
+        @foreach ($categories as $key => $label)
+            <a href="{{ route('linimasa.index', ['category' => $key]) }}"
+               class="btn btn-pill-filter text-nowrap {{ $activeCategory === $key ? 'active' : '' }}">{{ $label }}</a>
+        @endforeach
     </div>
 
     {{-- Main Layout Grid --}}
     <div class="row g-4">
         {{-- Feed Column (Col 8) --}}
         <div class="col-lg-8">
-            {{-- Post 1: Pinned --}}
-            <article class="card bg-surface-card rounded-4 border-0 shadow-sm mb-4 position-relative overflow-hidden feed-entry" data-tags="renungan">
-                <div class="pinned-accent-bar"></div>
-                <div class="card-body p-4 pt-4">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge badge-soft-primary rounded-pill d-inline-flex align-items-center gap-1">
-                                <i class="bi bi-pin-angle-fill"></i> Pinned
-                            </span>
-                            <small class="text-muted">• March 12, 2025</small>
-                            <small class="text-muted">• 1 min read</small>
+            @forelse ($notes as $note)
+                @include('linimasa._note-card', ['note' => $note])
+            @empty
+                <div class="card bg-surface-card rounded-4 border-0 shadow-sm p-5 text-center mb-4">
+                    <i class="bi bi-moon-stars text-secondary fs-1 mb-3 d-block"></i>
+                    <h2 class="h5 text-light mb-1">
+                        {{ $activeCategory ? 'No notes in this category yet' : 'The space is still quiet' }}
+                    </h2>
+                    <p class="text-secondary small mb-0">
+                        {{ $activeCategory
+                            ? 'Try another category, or browse every dump.'
+                            : 'No public notes have been released yet. Come back after dark.' }}
+                    </p>
+                    @if ($activeCategory)
+                        <div class="mt-3">
+                            <a href="{{ route('linimasa.index') }}" class="btn btn-pill-filter active">View Every Dump</a>
                         </div>
-                        <span class="badge bg-transparent text-info font-mono-code">#Reflection</span>
-                    </div>
-                    <h2 class="h4 fw-bold text-light mb-3">Why i made this?</h2>
-                    <div class="font-editorial text-secondary mb-4">
-                        <p class="mb-3">
-                            Media sosial kontemporer menuntut kita untuk selalu reaktif, berpendapat cepat, dan mengonsumsi stimulasi tanpa jeda. Ruang ini lahir justru dari kelelahan itu—sebuah suaka kecil tempat pikiran tidak perlu dipoles untuk algoritma.
-                        </p>
-                        <div class="font-editorial-quote text-light p-3 my-3 rounded-3 border-start border-3 border-primary" style="background-color: rgba(99, 102, 241, 0.08);">
-                            "Di dalam keheningan larut malam, kejujuran terhadap diri sendiri menemukan jalannya kembali."
-                        </div>
-                        <p class="mb-0">
-                            Hanya catatan ringkas, sesekali foto jalan sepi, dan serpihan ide yang belum matang. Selamat datang, silakan merenung sejenak sebelum kembali melangkah.
-                        </p>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between pt-3 border-top border-secondary border-opacity-10 flex-wrap gap-2">
-                        <div class="d-flex align-items-center gap-2">
-                            <button class="btn btn-reaction d-flex align-items-center gap-1">
-                                <span>❤️</span> <span class="font-mono-code">42</span>
-                            </button>
-                            <button class="btn btn-reaction d-flex align-items-center gap-1">
-                                <span>☕</span> <span class="font-mono-code">19</span>
-                            </button>
-                            <button class="btn btn-reaction d-flex align-items-center gap-1">
-                                <span>💭</span> <span class="font-mono-code">8</span>
-                            </button>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <button class="btn btn-sm btn-outline-secondary rounded-circle border-0 text-muted" title="Simpan catatan">
-                                <i class="bi bi-bookmark fs-6"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-secondary rounded-circle border-0 text-muted" title="Bagikan">
-                                <i class="bi bi-share fs-6"></i>
-                            </button>
-                        </div>
-                    </div>
+                    @endif
                 </div>
-            </article>
+            @endforelse
 
-            <div class="py-4 text-center">
-                <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem; letter-spacing: 0.15em;">
-                    — End of spoils for this week —
-                </span>
-            </div>
+            {{-- Pagination --}}
+            @if ($notes->hasPages())
+                <nav class="d-flex justify-content-center mb-3">
+                    {{ $notes->onEachSide(1)->links() }}
+                </nav>
+            @endif
+
+            {{-- Penanda akhir feed (hanya di halaman terakhir yang berisi) --}}
+            @if ($notes->isNotEmpty() && ! $notes->hasMorePages())
+                <div class="py-4 text-center">
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem; letter-spacing: 0.15em;">
+                        — End of spoils for this week —
+                    </span>
+                </div>
+            @endif
         </div>
 
         {{-- Sidebar Column (Col 4) --}}
@@ -138,14 +128,15 @@
                 <div class="card bg-surface-card rounded-4 border-0 shadow-sm p-4">
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <img src="{{ $owner?->avatar_url }}"
-                             alt="{{ $owner?->name }}" class="rounded-circle object-fit-cover border border-primary border-opacity-50" width="48" height="48">
+                             alt="{{ $owner?->name }}" class="img-preview rounded-circle object-fit-cover border border-primary border-opacity-50" width="48" height="48">
                         <div>
-                            <h3 class="h6 fw-bold mb-0 text-light">Tentang Ruang Ini</h3>
-                            <small class="text-muted">Catatan Mandiri</small>
+                            <h3 class="h6 fw-bold mb-0 text-light">About Nocturne</h3>
+                            <small class="text-muted">Self Note</small>
                         </div>
                     </div>
                     <p class="text-secondary small mb-3">
-                        Hanya pemilik ruang ini yang dapat menerbitkan tulisan. Publik dipersilakan membaca, menikmati keheningan, atau sekadar meninggalkan tanda bahwa Anda pernah singgah.
+                        {{-- Hanya pemilik ruang ini yang dapat menerbitkan tulisan. Publik dipersilakan membaca, menikmati keheningan, atau sekadar meninggalkan tanda bahwa Anda pernah singgah. --}}
+                        Only the owner of this places able to release a notes. All of these are available to read publicly. Enjoy the silence, or maybe leave a trace that you have been visiting.
                     </p>
                     {{-- <div class="p-3 rounded-3 bg-dark-subtle border border-secondary border-opacity-10 d-flex align-items-start gap-2 text-info small">
                         <i class="bi bi-moon-stars mt-1"></i>
@@ -195,18 +186,19 @@
                 {{-- Widget: Anonymous Support --}}
                 <div class="card bg-surface-card rounded-4 border-0 shadow-sm p-4">
                     <h4 class="h6 text-uppercase fw-bold text-light d-flex align-items-center gap-2 mb-2" style="letter-spacing: 0.05em; font-size: 0.8rem;">
-                        <i class="bi bi-heart text-info"></i> Kirim Dukungan Hangat
+                        <i class="bi bi-heart text-info"></i> Yap to me
                     </h4>
                     <p class="text-secondary small mb-3">
-                        Meninggalkan jejak anonim untuk penulis tanpa perlu mendaftar akun:
+                        {{-- Meninggalkan jejak anonim untuk penulis tanpa perlu mendaftar akun: --}}
+                        Leave a message anonimously for me without even login:
                     </p>
                     <div class="d-flex flex-column gap-2">
-                        <input type="text" class="form-control form-control-sm bg-dark border-secondary border-opacity-25 text-light" id="anon-input" placeholder="Tuliskan sepatah kata atau sapaan...">
+                        <input type="text" class="form-control form-control-sm bg-dark border-secondary border-opacity-25 text-light" id="anon-input" placeholder="Write one/two words or greatings..">
                         <button type="button" class="btn btn-sm btn-primary rounded-3 d-flex align-items-center justify-content-center gap-2 fw-medium" id="send-salam-btn" style="background-color: #8083ff; border-color: #8083ff;">
-                            <i class="bi bi-send-fill"></i> Kirimkan Salam
+                            <i class="bi bi-send-fill"></i> Sent Message
                         </button>
                         <div class="d-none text-center py-2 text-info small" id="salam-feedback">
-                            ✨ Salam hangatmu telah terkirim ke meja penulis.
+                            ✨ Your Yap has been sent to the writer.
                         </div>
                     </div>
                 </div>

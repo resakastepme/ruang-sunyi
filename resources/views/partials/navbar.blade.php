@@ -7,11 +7,11 @@
      style="background-color: rgba(15, 19, 28, 0.88); backdrop-filter: blur(14px); border-color: rgba(255, 255, 255, 0.08) !important;">
     <div class="container py-1">
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('linimasa.index') }}">
-            <img src="https://lh3.googleusercontent.com/aida/AEtjO1UGsqdxvU0WQSnPOcKdMkeQFNLOxTKPCh-H1ucVh9OGfF22NPTcuxU-KwZZTu4JCj_y_9Kczildmy5WH21VKhUfoZcXlVSrR1cIEfvmWcgXs5cNHkt1r6IvViBlFp1Y58s4B6dQhMxK7YgBzLTeaJqbnuOvrL3XZ2pY_niHl3H4B60EQY6w8nWigNwQefYBOZekiY--AS8SnX0_Wkvs9gyO63EMB8wYQ9I3BkqgGJMoiQGVHcv9jTK7QoqQ"
-                 alt="Ruang Sunyi Logo" class="rounded-2" width="34" height="34">
+            <img src="{{ asset('favico.png') }}"
+                 alt="Nocturne Notes Logo" class="rounded-2" width="34" height="34">
             <div class="d-flex flex-column">
-                <span class="fw-bold lh-1 text-light" style="letter-spacing: -0.02em;">Ruang Sunyi</span>
-                <span class="text-uppercase text-muted" style="font-size: 0.65rem; letter-spacing: 0.15em;">Nocturne Notes</span>
+                <span class="fw-bold lh-1 text-light" style="letter-spacing: -0.02em;">Nocturne Notes</span>
+                <span class="text-muted" style="font-size: 0.65rem; letter-spacing: 0.08em;">by stepme</span>
             </div>
         </a>
 
@@ -40,8 +40,13 @@
                     <span class="spinner-grow spinner-grow-sm text-info" role="status" style="width: 7px; height: 7px;"></span>
                     <span style="font-size: 0.8rem;">Admin Panel</span>
                 </a> --}}
-                <img src="{{ $owner?->avatar_url }}"
-                     alt="{{ $owner?->name }}" class="rounded-circle object-fit-cover border border-secondary border-opacity-25" width="36" height="36">
+                <button type="button"
+                        class="btn btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-2"
+                        disabled aria-disabled="true" title="Can't login yet"
+                        style="background-color: #181c24; border: 1px solid rgba(255, 255, 255, 0.08); color: #908fa0;">
+                    <i class="bi bi-lock-fill"></i>
+                    <span style="font-size: 0.8rem;">Can't login yet</span>
+                </button>
             </div>
         </div>
     </div>

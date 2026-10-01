@@ -3,12 +3,18 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NoteController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LinimasaController;
+use App\Http\Controllers\SpecialNoteController;
 use App\Http\Controllers\TentangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LinimasaController::class, 'index'])->name('linimasa.index');
 Route::get('/tentang', [TentangController::class, 'index'])->name('tentang.index');
+Route::get('/special-note', [SpecialNoteController::class, 'index'])->name('special-note.index');
+
+// Komentar publik (anonim / bernama) — client mengirim via AJAX.
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 
 /*
 |--------------------------------------------------------------------------

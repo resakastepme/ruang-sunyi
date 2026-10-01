@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Note extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * Kategori / mood catatan — sumber tunggal yang dipakai composer,
@@ -65,6 +67,11 @@ class Note extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Accessors
@@ -84,6 +91,18 @@ class Note extends Model
         );
     }
 
+    /** Estimasi waktu baca dalam menit (≈200 kata/menit, minimal 1). */
+    protected function readingTime(): Attribute
+    {
+        return Attribute::make(
+            get: function (): int {
+                $words = str_word_count(strip_tags((string) $this->content));
+
+                return max(1, (int) ceil($words / 200));
+            },
+        );
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Query Scopes
@@ -92,6 +111,12 @@ class Note extends Model
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', 'published');
+    }
+
+    /** Hanya catatan yang ditujukan untuk konsumsi publik. */
+    public function scopePublic(Builder $query): Builder
+    {
+        return $query->where('visibility', 'public');
     }
 
     public function scopeDrafts(Builder $query): Builder
