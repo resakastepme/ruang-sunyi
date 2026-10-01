@@ -16,9 +16,10 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        unset($data['image']); // jangan pernah mass-assign objek UploadedFile
+        unset($data['image'], $data['youtube']); // jangan mass-assign UploadedFile / input mentah
 
         $data['tags'] = $this->parseTags($request->input('tags'));
+        $data['youtube_video_id'] = Note::parseYoutubeId($request->input('youtube'));
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('notes', 'public');
@@ -47,9 +48,10 @@ class NoteController extends Controller
     public function update(Request $request, Note $note)
     {
         $data = $this->validated($request);
-        unset($data['image']);
+        unset($data['image'], $data['youtube']);
 
         $data['tags'] = $this->parseTags($request->input('tags'));
+        $data['youtube_video_id'] = Note::parseYoutubeId($request->input('youtube'));
 
         if ($request->hasFile('image')) {
             if ($note->image) {
@@ -135,6 +137,11 @@ class NoteController extends Controller
             'status'     => ['required', Rule::in(['draft', 'published'])],
             'tags'       => ['nullable', 'string', 'max:255'],
             'image'      => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+            'youtube'    => ['nullable', 'string', 'max:255', function ($attribute, $value, $fail) {
+                if (filled($value) && ! Note::parseYoutubeId($value)) {
+                    $fail('Enter a valid YouTube link or video ID.');
+                }
+            }],
         ], [], [
             'content' => 'note content',
         ]);

@@ -42,6 +42,15 @@
             </div>
         @endif
 
+        {{-- Video YouTube tertanam (opsional) --}}
+        @if ($note->youtube_video_id)
+            <div class="ratio ratio-16x9 rounded-3 overflow-hidden mb-4">
+                <iframe src="{{ $note->youtube_embed_url }}" title="Note video"
+                        frameborder="0" loading="lazy" allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+            </div>
+        @endif
+
         {{-- Tag --}}
         @if (! empty($noteTags))
             <div class="d-flex flex-wrap gap-2 mb-3">

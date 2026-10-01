@@ -195,6 +195,14 @@
                                 <img src="{{ $note->image_url }}" alt="Note attachment" class="img-fluid rounded border border-secondary border-opacity-25 mb-3" style="max-height: 260px;">
                             @endif
 
+                            @if ($note->youtube_video_id)
+                                <div class="ratio ratio-16x9 rounded border border-secondary border-opacity-25 overflow-hidden mb-3" style="max-width: 460px;">
+                                    <iframe src="{{ $note->youtube_embed_url }}" title="Note video"
+                                            frameborder="0" loading="lazy" allowfullscreen
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+                                </div>
+                            @endif
+
                             <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25 gap-2">
                                 <div class="d-flex flex-wrap gap-2 font-mono text-secondary" style="font-size: 0.8rem;">
                                     @forelse ($note->tags ?? [] as $tag)

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NoteController;
+use App\Http\Controllers\Admin\YouTubeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\LinimasaController;
@@ -44,6 +45,12 @@ Route::prefix('admin-ca9ef168e63c4863')->name('admin.')->group(function () {
         Route::patch('/notes/{note}/pin', [NoteController::class, 'togglePin'])->name('notes.pin');
         Route::patch('/notes/{note}/visibility', [NoteController::class, 'toggleVisibility'])->name('notes.visibility');
         Route::patch('/notes/{note}/publish', [NoteController::class, 'publish'])->name('notes.publish');
+
+        // YouTube (OAuth + upload)
+        Route::get('/youtube/connect', [YouTubeController::class, 'connect'])->name('youtube.connect');
+        Route::get('/youtube/callback', [YouTubeController::class, 'callback'])->name('youtube.callback');
+        Route::post('/youtube/disconnect', [YouTubeController::class, 'disconnect'])->name('youtube.disconnect');
+        Route::post('/youtube/upload', [YouTubeController::class, 'upload'])->name('youtube.upload');
 
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });
