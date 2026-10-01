@@ -3,9 +3,13 @@
     Menerima $note (App\Models\Note) yang sudah published + public.
 --}}
 @php
-    $isPinned    = (bool) $note->is_pinned;
-    $publishedAt = $note->published_at ?? $note->created_at;
-    $noteTags    = $note->tags ?? [];
+    $isPinned     = (bool) $note->is_pinned;
+    $publishedAt  = $note->published_at ?? $note->created_at;
+    $noteTags     = $note->tags ?? [];
+    $scope        = 'note-' . $note->id;
+    $loveCount    = $note->reaction?->love_count ?? 0;
+    $coffeeCount  = $note->reaction?->coffee_count ?? 0;
+    $commentCount = $note->comments->count();
 @endphp
 
 <article class="card bg-surface-card rounded-4 border-0 shadow-sm mb-4 position-relative overflow-hidden feed-entry"
@@ -63,21 +67,23 @@
         {{-- Footer: reaksi + aksi --}}
         <div class="d-flex align-items-center justify-content-between pt-3 border-top border-secondary border-opacity-10 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-reaction d-flex align-items-center gap-1" title="Loves">
-                    <span>❤️</span> <span class="font-mono-code">{{ $note->likes_count }}</span>
+                <button type="button" class="btn btn-reaction d-flex align-items-center gap-1"
+                        data-react="love" data-scope="{{ $scope }}" title="Love">
+                    <span>❤️</span> <span class="font-mono-code rx-count">{{ $loveCount }}</span>
                 </button>
-                <button type="button" class="btn btn-reaction d-flex align-items-center gap-1" title="Coffees">
-                    <span>☕</span> <span class="font-mono-code">{{ $note->coffees_count }}</span>
+                <button type="button" class="btn btn-reaction d-flex align-items-center gap-1"
+                        data-react="coffee" data-scope="{{ $scope }}" title="Coffee">
+                    <span>☕</span> <span class="font-mono-code rx-count">{{ $coffeeCount }}</span>
                 </button>
-                <button type="button" class="btn btn-reaction d-flex align-items-center gap-1" title="Responses">
-                    <span>💭</span> <span class="font-mono-code">{{ $note->responses_count }}</span>
-                </button>
+                <a href="#comments-{{ $scope }}" class="btn btn-reaction d-flex align-items-center gap-1" title="Comments">
+                    <span>💭</span> <span class="font-mono-code">{{ $commentCount }}</span>
+                </a>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle border-0 text-muted" title="Save note">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle border-0 text-muted" title="Not there yet">
                     <i class="bi bi-bookmark fs-6"></i>
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle border-0 text-muted" title="Share">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle border-0 text-muted share-btn" title="Share">
                     <i class="bi bi-share fs-6"></i>
                 </button>
             </div>

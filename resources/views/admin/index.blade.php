@@ -327,48 +327,53 @@
                     </div>
                 </div>
 
-                {{-- 3. INBOX --}}
+                {{-- 3. YAP TO ME (pesan anonim pembaca) --}}
                 <div class="card card-custom mb-4 shadow-sm">
                     <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 py-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-envelope-heart-fill text-danger"></i>
-                            <span class="fw-semibold text-light small text-uppercase font-mono">Readers' Digital Letters</span>
+                            <span class="fw-semibold text-light small text-uppercase font-mono">Yap to Me</span>
                         </div>
-                        <span class="badge bg-danger rounded-pill font-mono" style="font-size: 0.7rem;">2 New</span>
+                        @if ($yapUnread > 0)
+                            <span class="badge bg-danger rounded-pill font-mono" style="font-size: 0.7rem;">{{ $yapUnread }} New</span>
+                        @endif
                     </div>
                     <div class="card-body p-3">
                         <div class="d-flex flex-column gap-2.5">
-                            <div class="card-nested p-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="badge bg-secondary bg-opacity-25 text-light font-mono small">Night Wanderer #92</span>
-                                    <span class="text-secondary font-mono" style="font-size: 0.72rem;">1 hour ago</span>
+                            @forelse ($yaps as $yap)
+                                <div class="card-nested p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="badge bg-secondary bg-opacity-25 text-light font-mono small">
+                                            {{ $yap->alias }}@unless ($yap->is_read) <span class="text-danger">•</span>@endunless
+                                        </span>
+                                        <span class="text-secondary font-mono" style="font-size: 0.72rem;">{{ $yap->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <p class="font-editorial fst-italic text-light small mb-2">"{{ $yap->message }}"</p>
+                                    <div class="d-flex justify-content-end gap-1">
+                                        @unless ($yap->is_read)
+                                            <form method="POST" action="{{ route('admin.yaps.read', $yap) }}" class="d-inline">
+                                                @csrf @method('PATCH')
+                                                <button class="btn btn-outline-secondary btn-sm py-0 px-2 font-mono" style="font-size: 0.72rem;" type="submit"><i class="bi bi-check2"></i> Mark as Read</button>
+                                            </form>
+                                        @endunless
+                                        <form method="POST" action="{{ route('admin.yaps.destroy', $yap) }}" class="d-inline" data-confirm="Delete this yap?">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-outline-danger btn-sm py-0 px-2 font-mono" style="font-size: 0.72rem;" type="submit"><i class="bi bi-trash3"></i> Delete</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <p class="font-editorial fst-italic text-light small mb-2">
-                                    "Your writing about the grace of leaving the capital struck me and embraced me all at once as I sit restless in this overtime office. Thank you, Resa."
-                                </p>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <button class="btn btn-outline-secondary btn-sm py-0 px-2 font-mono" style="font-size: 0.72rem;"><i class="bi bi-check2"></i> Mark as Read</button>
-                                    <button class="btn btn-outline-primary btn-sm py-0 px-2 font-mono" style="font-size: 0.72rem;"><i class="bi bi-reply-fill"></i> Reply</button>
+                            @empty
+                                <div class="text-center text-secondary small py-4">
+                                    <i class="bi bi-moon-stars d-block fs-4 mb-2 opacity-50"></i>
+                                    No yaps yet. When a reader leaves a message, it shows up here.
                                 </div>
-                            </div>
-                            <div class="card-nested p-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="badge bg-secondary bg-opacity-25 text-light font-mono small">Dusk &amp; Coffee Lover</span>
-                                    <span class="text-secondary font-mono" style="font-size: 0.72rem;">Yesterday, 21:04</span>
+                            @endforelse
+
+                            @if ($yapTotal > $yaps->count())
+                                <div class="text-center mt-3 pt-2 border-top border-secondary border-opacity-25">
+                                    <span class="small text-secondary font-mono">Showing latest {{ $yaps->count() }} of {{ $yapTotal }} yaps</span>
                                 </div>
-                                <p class="font-editorial fst-italic text-light small mb-2">
-                                    "The chamomile blend you recommended in last night's status worked wonders for my insomnia. Looking forward to your next archived piece!"
-                                </p>
-                                <div class="d-flex justify-content-end gap-1">
-                                    <button class="btn btn-outline-secondary btn-sm py-0 px-2 font-mono" style="font-size: 0.72rem;"><i class="bi bi-check2"></i> Mark as Read</button>
-                                    <button class="btn btn-outline-primary btn-sm py-0 px-2 font-mono" style="font-size: 0.72rem;"><i class="bi bi-reply-fill"></i> Reply</button>
-                                </div>
-                            </div>
-                            <div class="text-center mt-3 pt-2 border-top border-secondary border-opacity-25">
-                                <a class="small text-decoration-none text-secondary hover-text-light font-mono" href="#">
-                                    Open All Letters Archive (48) <i class="bi bi-arrow-right"></i>
-                                </a>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

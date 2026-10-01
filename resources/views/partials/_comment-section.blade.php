@@ -12,7 +12,7 @@
 @php($comments = $comments ?? collect())
 @php($count = $comments->count())
 
-<div class="comment-section" data-scope="{{ $scope }}">
+<div class="comment-section" data-scope="{{ $scope }}" id="comments-{{ $scope }}">
     <h3 class="h6 text-uppercase fw-bold text-light d-flex align-items-center gap-2 mb-4"
         style="letter-spacing: 0.05em; font-size: 0.8rem;">
         <i class="bi bi-chat-square-text text-info"></i> Comments

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Note;
+use App\Models\Yap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -37,7 +38,12 @@ class DashboardController extends Controller
             'pinned'    => Note::pinned()->count(),
         ];
 
-        return view('admin.index', compact('notes', 'counts', 'tab', 'q'));
+        // Yap to me — pesan anonim pembaca (terbaru dulu).
+        $yaps      = Yap::latest()->take(8)->get();
+        $yapUnread = Yap::unread()->count();
+        $yapTotal  = Yap::count();
+
+        return view('admin.index', compact('notes', 'counts', 'tab', 'q', 'yaps', 'yapUnread', 'yapTotal'));
     }
 
     /**

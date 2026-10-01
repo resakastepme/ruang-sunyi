@@ -32,7 +32,7 @@ class LinimasaController extends Controller
         $notes = Note::query()
             ->published()
             ->public()
-            ->with(['comments' => fn ($query) => $query->latest()])
+            ->with(['comments' => fn ($query) => $query->latest(), 'reaction'])
             ->when($activeCategory, fn ($query) => $query->where('category', $activeCategory))
             ->ordered()
             ->paginate(8)

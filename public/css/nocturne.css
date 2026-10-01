@@ -259,6 +259,10 @@ body.accent-glow {
   opacity: 0.9;
 }
 
+/* Loncat ke ruang komentar (dari tombol 💭) tanpa ketutup navbar sticky */
+html { scroll-behavior: smooth; }
+.comment-section { scroll-margin-top: 84px; }
+
 /* Satu komentar pada daftar */
 .comment-item {
   display: flex;
@@ -328,6 +332,49 @@ body.accent-glow {
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
 }
+
+/* ==========================================================================
+   Dialog share
+   ========================================================================== */
+.share-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(8, 10, 16, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.share-pop.show { display: flex; }
+.share-card {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: #181c24;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem 1.4rem 1.3rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  animation: imgLightboxIn 0.18s ease-out;
+}
+.share-close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.7rem;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50rem;
+  background: transparent;
+  color: #908fa0;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.share-close:hover { color: #fff; }
 
 /* ==========================================================================
    Halaman legal (Privacy Policy / Terms of Service)

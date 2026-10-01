@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Reaction;
 use Illuminate\Support\Carbon;
 
 class SpecialNoteController extends Controller
@@ -51,7 +52,7 @@ class SpecialNoteController extends Controller
 
         sorry kalau kamu udah ada yg punya, tolong bilang ke partner kamu kalau aku cuma confess, ga bakal lebih, suer dah
 
-        thats it from me, panjang bat ni chat kaya UUD
+        thats it from me, panjang bat ni kaya UUD
         makasi udah baca
         LETTER;
 
@@ -73,6 +74,9 @@ class SpecialNoteController extends Controller
             ->latest()
             ->get();
 
+        // Reaksi agregat untuk scope 'special'.
+        $reaction = Reaction::firstWhere('scope', 'special');
+
         return view('special-note.index', compact(
             'paragraphs',
             'readingTime',
@@ -80,6 +84,7 @@ class SpecialNoteController extends Controller
             'categoryLabel',
             'tags',
             'comments',
+            'reaction',
         ));
     }
 }
