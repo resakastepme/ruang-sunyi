@@ -7,44 +7,106 @@ $(function () {
 
     // Filter kategori kini ditangani server-side (tautan pill ?category=...).
 
-    // Toggle reaksi -------------------------------------------------------
-    $('.btn-reaction').on('click', function () {
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    // Reaksi love / coffee (persist ke server) ----------------------------
+    // Tiap browser mengingat reaksinya di localStorage agar bisa di-toggle.
+    function rxKey(scope, type) { return 'rx:' + scope + ':' + type; }
+
+    function rxStored(scope, type) {
+        try { return localStorage.getItem(rxKey(scope, type)) === '1'; }
+        catch (e) { return false; }
+    }
+
+    // Tandai tombol yang sudah pernah direaksi oleh browser ini.
+    $('[data-react]').each(function () {
         var $btn = $(this);
-        var $counter = $btn.find('.font-mono-code');
-
-        if (!$counter.length) {
-            return;
-        }
-
-        var count = parseInt($counter.text(), 10) || 0;
-
-        if ($btn.hasClass('active')) {
-            $btn.removeClass('active');
-            $counter.text(Math.max(0, count - 1));
-        } else {
+        if (rxStored($btn.data('scope'), $btn.data('react'))) {
             $btn.addClass('active');
-            $counter.text(count + 1);
         }
     });
 
-    // Kirim salam anonim --------------------------------------------------
+    $(document).on('click', '[data-react]', function () {
+        var $btn   = $(this);
+        var scope  = $btn.data('scope');
+        var type   = $btn.data('react');
+        var action = rxStored(scope, type) ? 'remove' : 'add';
+
+        $btn.prop('disabled', true);
+
+        $.ajax({
+            url: '/reactions',
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrfToken },
+            data: { scope: scope, type: type, action: action }
+        }).done(function (r) {
+            $btn.find('.rx-count').text(type === 'love' ? r.love : r.coffee);
+            try {
+                if (action === 'add') { localStorage.setItem(rxKey(scope, type), '1'); }
+                else { localStorage.removeItem(rxKey(scope, type)); }
+            } catch (e) {}
+            $btn.toggleClass('active', action === 'add');
+        }).always(function () {
+            $btn.prop('disabled', false);
+        });
+    });
+
+    // Kirim "Yap to me" anonim (persist) ----------------------------------
     var $feedback = $('#salam-feedback');
     var feedbackTimer = null;
 
     $('#send-salam-btn').on('click', function () {
+        var $btn   = $(this);
         var $input = $('#anon-input');
+        var msg    = $.trim($input.val());
 
-        if ($.trim($input.val()) === '') {
-            return;
+        if (msg === '') { $input.trigger('focus'); return; }
+
+        $btn.prop('disabled', true);
+
+        $.ajax({
+            url: $btn.data('yap-url'),
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrfToken },
+            data: { message: msg }
+        }).done(function () {
+            $input.val('');
+            $feedback.text('✨ Your Yap has been sent to the writer.').removeClass('d-none');
+            clearTimeout(feedbackTimer);
+            feedbackTimer = setTimeout(function () { $feedback.addClass('d-none'); }, 3500);
+        }).fail(function () {
+            $feedback.text('Could not send. Please try again.').removeClass('d-none');
+        }).always(function () {
+            $btn.prop('disabled', false);
+        });
+    });
+
+    // Share (native share sheet, atau dialog fallback) --------------------
+    var $sharePop = $('#share-pop');
+    var shareUrl  = $('#share-url').val() || '';
+
+    $(document).on('click', '.share-btn', function () {
+        if (navigator.share) {
+            navigator.share({ title: 'Nocturne Notes', url: shareUrl }).catch(function () {});
+        } else {
+            $sharePop.addClass('show').attr('aria-hidden', 'false');
         }
+    });
 
-        $input.val('');
-        $feedback.removeClass('d-none');
+    function closeShare() { $sharePop.removeClass('show').attr('aria-hidden', 'true'); }
+    $('#share-close').on('click', closeShare);
+    $sharePop.on('click', function (e) { if (e.target === $sharePop[0]) { closeShare(); } });
 
-        clearTimeout(feedbackTimer);
-        feedbackTimer = setTimeout(function () {
-            $feedback.addClass('d-none');
-        }, 3500);
+    $('#share-copy').on('click', function () {
+        var $copied = $('#share-copied');
+        function ok() { $copied.removeClass('d-none'); setTimeout(function () { $copied.addClass('d-none'); }, 2500); }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(ok).catch(function () {
+                $('#share-url').trigger('select'); try { document.execCommand('copy'); } catch (e) {} ok();
+            });
+        } else {
+            $('#share-url').trigger('select'); try { document.execCommand('copy'); } catch (e) {} ok();
+        }
     });
 
     // Form "Surat Digital" (halaman Tentang) ------------------------------
