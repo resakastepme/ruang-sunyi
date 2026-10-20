@@ -237,6 +237,29 @@ body.accent-glow {
    Halaman "Special Note" (/special-note)
    ========================================================================== */
 
+/* Isi surat catatan khusus — kontras lebih tinggi agar nyaman dibaca
+   (menggantikan .text-secondary yang terlalu redup di body.accent-glow). */
+.special-note-body {
+  color: #c3c7d6;
+}
+.special-note-body p {
+  color: #c3c7d6;
+}
+/* Font paragraf surat — samakan dengan Notepad Windows 11 (Consolas).
+   Judul sorotan ".special-note-highlight" dikecualikan agar tetap gayanya. */
+.special-note-body p:not(.special-note-highlight) {
+  font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+/* Padding kiri-kanan hanya di layar lebar (desktop), tidak berlaku di mobile. */
+@media (min-width: 992px) {
+  .special-note-body {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
 /* Baris sorotan di tengah catatan — "I LIKE YOU" */
 .special-note-highlight {
   font-family: 'Plus Jakarta Sans', sans-serif;
