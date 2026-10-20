@@ -31,7 +31,7 @@
                     </div>
 
                     {{-- Isi catatan (hardcoded, dipertahankan baris & paragrafnya) --}}
-                    <div class="font-editorial note-markdown text-secondary mb-4">
+                    <div class="font-editorial note-markdown special-note-body mb-4">
                         @foreach ($paragraphs as $paragraph)
                             @if (trim($paragraph) === 'I LIKE YOU')
                                 <p class="special-note-highlight">{{ trim($paragraph) }}</p>
